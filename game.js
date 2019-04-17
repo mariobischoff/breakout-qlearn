@@ -3,6 +3,14 @@ var Breakout = (function () {
     const INITIAL_PADDLE = {x: 165, y: 390};
     var paddle = {x: INITIAL_PADDLE.x, y: INITIAL_PADDLE.y};
     var ball = {x: 195, y: 200};
+    var brick = {
+        x: 10,
+        y: 10,
+        status: false,
+        width: 60,
+        height: 10,
+    };
+    var bricks = [];
     var vel = {x: 0, y: 0};
 
     var intervalID;
@@ -31,6 +39,14 @@ var Breakout = (function () {
             paddle.x = INITIAL_PADDLE.x;
             paddle.y = INITIAL_PADDLE.y;
 
+            for (let i = 3; i < 8; i++) {
+                for (let j = 0; j < 13; j++) {
+                    brick.x = j * brick.width;
+                    brick.y = i * brick.height;
+                    bricks.push(brick);
+                }
+            }
+
             reward = -1;
 
             lastAction = ActionEnum.none;
@@ -55,14 +71,21 @@ var Breakout = (function () {
             ball.y += vel.y;
 
 
-            ctx.fillStyle = '#000';
+            ctx.fillStyle = 'black';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.fillStyle = '#777';
+            ctx.fillStyle = 'white';
             ctx.fillRect(ball.x, ball.y, 10, 10);
 
-            ctx.fillStyle = '#777';
+            ctx.fillStyle = 'white';
             ctx.fillRect(paddle.x, paddle.y, 70, 10);
+
+            bricks.forEach((brick) => {
+                if (brick.status) {
+                    ctx.fillRect(brick.x, brick.y, brick.width, brick.height);
+                }
+            });
+
 
             if (ball.y < 0) vel.y = - vel.y;
             if (ball.y > canvas.height - 10) game.reset();
@@ -77,8 +100,8 @@ var Breakout = (function () {
 
             ctx.fillStyle = 'white';
             ctx.font = "bold small-caps 16px Helvetica";
-            ctx.fillText("points: " + points, 288, 40);
-            ctx.fillText("top: " + pointsMax, 292, 60);
+            ctx.fillText("points: " + points, 320, 25);
+            // ctx.fillText("top: " + pointsMax, 292, 60);
             return reward;
         }
     }
